@@ -21,7 +21,7 @@ if ( is_admin() ) {
 	require_once plugin_dir_path( YAYDOO_GTM_PLUGIN_FILE ) . 'admin/settings-page.php';
 	require_once plugin_dir_path( YAYDOO_GTM_PLUGIN_FILE ) . 'admin/settings-register.php';
 	require_once plugin_dir_path( YAYDOO_GTM_PLUGIN_FILE ) . 'admin/settings-callbacks.php';
-	// require_once plugin_dir_path( YAYDOO_GTM_PLUGIN_FILE ) . 'admin/settings-validate.php';
+	require_once plugin_dir_path( YAYDOO_GTM_PLUGIN_FILE ) . 'admin/settings-validate.php';
 }
 
 /**
@@ -30,13 +30,8 @@ if ( is_admin() ) {
 add_action( 'wp_head', 'yaydoo_gtm_insert_code_header' );
 
 function yaydoo_gtm_insert_code_header() {
-	// Insert functionality to add Google Tag Manager ?>
-	<style>
-		body {
-			background-color : #f1f1f1;
-		}
-	</style>
-	<?php
+	// Insert functionality to add Google Tag Manager
+	output_snippet( 'header_code_snippet' );
 }
 
 /**
@@ -46,11 +41,37 @@ add_action( 'wp_body_open', 'yaydoo_gtm_insert_code_no_script' );
 add_action( 'wp_footer', 'yaydoo_gtm_insert_code_no_script' );
 
 function yaydoo_gtm_insert_code_no_script() {
+	// If wp_body_open hook is available, remove wp_footer (initially added for backward compatibility)
 	if ( doing_action( 'wp_body_open' ) ) {
 		remove_action( 'wp_footer', 'yaydoo_gtm_insert_code_no_script' );
 	}
+	output_snippet( 'no_script_code_snippet' );
+}
 
-	echo 'This is inserted in case of no script.';
+function output_snippet( $setting_option ) {
+	$options      = get_option( 'yaydoo_gtm_options' );
+	// Get meta
+	$meta = $options[ $setting_option ];
+	if ( empty( $meta ) ) {
+		return;
+	}
+	if ( trim( $meta ) === '' ) {
+		return;
+	}
+
+	// $allowed_html = array(
+	// 	'script'   => array(),
+	// 	'noscript' => array(),
+	// 	'iframe'   => array(
+	// 		'src'    => array(),
+	// 		'height' => array(),
+	// 		'width'  => array(),
+	// 		'style'  => array(),
+	// 	),
+	// );
+
+	// Output
+	echo html_entity_decode( $meta, ENT_QUOTES );
 }
 
 /**

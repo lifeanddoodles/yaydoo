@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
 
 add_action( 'admin_init', 'yaydoo_gtm_register_settings' );
 
+// Register plugin settings
 function yaydoo_gtm_register_settings() {
 	register_setting(
 		'yaydoo_gtm_options',
@@ -14,6 +15,7 @@ function yaydoo_gtm_register_settings() {
 		'yaydoo_gtm_callback_validate_options'
 	);
 
+	// Add settings sections
 	add_settings_section(
 		'yaydoo_gtm_section_admin',
 		esc_html__( 'Google Tag Manager Snippets', 'yaydoo-gtm' ),
@@ -21,6 +23,7 @@ function yaydoo_gtm_register_settings() {
 		'yaydoo_gtm'
 	);
 
+	// Add settings options
 	add_settings_field(
 		'header_code_snippet',
 		esc_html__( 'Header', 'yaydoo-gtm' ),

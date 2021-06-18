@@ -10,6 +10,11 @@ function yaydoo_gtm_display_settings_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
+
+	// only users with `unfiltered_html` can edit scripts.
+	if ( ! current_user_can( 'unfiltered_html' ) ) {
+		echo '<p>' . esc_html( __( 'Sorry, only have read-only access to this page. Ask your administrator for assistance editing.', 'yaydoo-gtm' ) ) . '</p>';
+	}
 	?>
 
 	<div class="wrap">
