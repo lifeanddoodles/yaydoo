@@ -50,7 +50,7 @@ function yaydoo_gtm_insert_code_no_script() {
 
 function output_snippet( $setting_option ) {
 	$options      = get_option( 'yaydoo_gtm_options' );
-	// Get meta
+	// Get textarea info
 	$meta = $options[ $setting_option ];
 	if ( empty( $meta ) ) {
 		return;
