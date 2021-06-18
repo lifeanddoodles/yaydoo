@@ -16,12 +16,20 @@ defined( 'ABSPATH' ) || exit;
 
 define( 'YAYDOO_GTM_PLUGIN_FILE', __FILE__ );
 
+if ( is_admin() ) {
+	require_once plugin_dir_path( YAYDOO_GTM_PLUGIN_FILE ) . 'admin/admin-menu.php';
+	require_once plugin_dir_path( YAYDOO_GTM_PLUGIN_FILE ) . 'admin/settings-page.php';
+	require_once plugin_dir_path( YAYDOO_GTM_PLUGIN_FILE ) . 'admin/settings-register.php';
+	require_once plugin_dir_path( YAYDOO_GTM_PLUGIN_FILE ) . 'admin/settings-callbacks.php';
+	// require_once plugin_dir_path( YAYDOO_GTM_PLUGIN_FILE ) . 'admin/settings-validate.php';
+}
+
 /**
  * Insert Google Tag Manager's code snippet in the header.
  */
-add_action( 'wp_head', 'yaydoo_insert_code_header' );
+add_action( 'wp_head', 'yaydoo_gtm_insert_code_header' );
 
-function yaydoo_insert_code_header() {
+function yaydoo_gtm_insert_code_header() {
 	// Insert functionality to add Google Tag Manager ?>
 	<style>
 		body {
@@ -34,12 +42,12 @@ function yaydoo_insert_code_header() {
 /**
  * Insert Google Tag Manager's code snippet when no script is true.
  */
-add_action( 'wp_body_open', 'yaydoo_insert_code_no_script' );
-add_action( 'wp_footer', 'yaydoo_insert_code_no_script' );
+add_action( 'wp_body_open', 'yaydoo_gtm_insert_code_no_script' );
+add_action( 'wp_footer', 'yaydoo_gtm_insert_code_no_script' );
 
-function yaydoo_insert_code_no_script() {
+function yaydoo_gtm_insert_code_no_script() {
 	if ( doing_action( 'wp_body_open' ) ) {
-		remove_action( 'wp_footer', 'yaydoo_insert_code_no_script' );
+		remove_action( 'wp_footer', 'yaydoo_gtm_insert_code_no_script' );
 	}
 
 	echo 'This is inserted in case of no script.';
