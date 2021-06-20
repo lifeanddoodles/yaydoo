@@ -48,8 +48,22 @@ function yaydoo_gtm_insert_code_no_script() {
 	output_snippet( 'no_script_code_snippet' );
 }
 
+// Whitelist safe CSS attributes
+function yaydoo_safe_css_attributes( $array ) {
+	$array[] = 'display';
+	$array[] = 'visibility';
+	return $array;
+}
+
+// Remove CSS attributes from the whitelist
+function yaydoo_remove_safe_css_attributes( $array ) {
+	unset( $array['display'] );
+	unset( $array['visibility'] );
+	return $array;
+}
+
 function output_snippet( $setting_option ) {
-	$options      = get_option( 'yaydoo_gtm_options' );
+	$options = get_option( 'yaydoo_gtm_options' );
 	// Get textarea info
 	$meta = $options[ $setting_option ];
 	if ( empty( $meta ) ) {
@@ -59,19 +73,23 @@ function output_snippet( $setting_option ) {
 		return;
 	}
 
-	// $allowed_html = array(
-	// 	'script'   => array(),
-	// 	'noscript' => array(),
-	// 	'iframe'   => array(
-	// 		'src'    => array(),
-	// 		'height' => array(),
-	// 		'width'  => array(),
-	// 		'style'  => array(),
-	// 	),
-	// );
+	$allowed_html = array(
+		'script'   => array(),
+		'noscript' => array(),
+		'iframe'   => array(
+			'src'    => array(),
+			'height' => array(),
+			'width'  => array(),
+			'style'  => array(),
+		),
+	);
 
+	// Telling WordPress about safe CSS attributes
+	add_filter( 'safe_style_css', 'yaydoo_safe_css_attributes' );
 	// Output
-	echo html_entity_decode( $meta, ENT_QUOTES );
+	echo wp_kses( html_entity_decode( $meta, ENT_QUOTES ), $allowed_html );
+	// Remove custom safe CSS attributes
+	add_filter( 'safe_style_css', 'yaydoo_remove_safe_css_attributes' );
 }
 
 /**
